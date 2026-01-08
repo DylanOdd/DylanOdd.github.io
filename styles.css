@@ -67,6 +67,34 @@ body {
   color: #aaa;
 }
 
+/* Video Hero */
+.video-hero {
+  position: relative;
+  overflow: hidden;
+  height: 80vh;
+}
+
+/* Background Video */
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.4); /* darkens video for readability */
+}
+
+/* Ensure content is above video */
+.video-hero .nav,
+.video-hero .hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+
 /* Sections */
 .section {
   padding: 4rem 2rem;
