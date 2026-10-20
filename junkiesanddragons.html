@@ -2,1336 +2,579 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A customizable community wiki template.">
-  <title>My Wiki | Community Encyclopedia</title>
-
-  <style>
-    /* ===== THEME VARIABLES ===== */
-    :root {
-      --accent: #4267a9;
-      --accent-dark: #2c4778;
-      --page-bg: #f1f3f6;
-      --surface: #ffffff;
-      --text: #20252d;
-      --muted: #6c7583;
-      --border: #d8dde6;
-      --link: #3568b8;
-      --sidebar-width: 230px;
-      --header-height: 64px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 85px;
-    }
-
-    body {
-      margin: 0;
-      background: var(--page-bg);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 15px;
-      line-height: 1.65;
-    }
-
-    a {
-      color: var(--link);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    /* ===== TOP HEADER ===== */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: var(--header-height);
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 0 26px;
-    }
-
-    .menu-toggle {
-      display: none;
-      border: 0;
-      background: transparent;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--text);
-      font-size: 19px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .brand:hover {
-      text-decoration: none;
-    }
-
-    .brand-icon {
-      display: grid;
-      place-items: center;
-      width: 37px;
-      height: 37px;
-      border-radius: 9px;
-      background: var(--accent);
-      color: white;
-      font-size: 21px;
-    }
-
-    .search {
-      position: relative;
-      width: min(440px, 45vw);
-      margin-left: auto;
-    }
-
-    .search input {
-      width: 100%;
-      padding: 9px 38px 9px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      outline: none;
-      background: #f8f9fb;
-    }
-
-    .search input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px #4267a922;
-    }
-
-    .search-icon {
-      position: absolute;
-      right: 13px;
-      top: 6px;
-      color: var(--muted);
-      pointer-events: none;
-    }
-
-    .header-link {
-      white-space: nowrap;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    /* ===== PAGE LAYOUT ===== */
-    .layout {
-      display: grid;
-      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-      max-width: 1600px;
-      margin: auto;
-      min-height: calc(100vh - var(--header-height));
-    }
-
-    /* ===== LEFT SIDEBAR ===== */
-    .sidebar {
-      padding: 25px 16px;
-      background: #e9edf3;
-      border-right: 1px solid var(--border);
-    }
-
-    .sidebar-title {
-      padding: 0 12px;
-      margin: 0 0 12px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-    }
-
-    .nav-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 28px;
-    }
-
-    .nav-list a {
-      display: block;
-      padding: 9px 12px;
-      margin: 2px 0;
-      color: #374354;
-      border-radius: 5px;
-    }
-
-    .nav-list a:hover,
-    .nav-list a.active {
-      color: var(--accent-dark);
-      background: #d9e2f2;
-      text-decoration: none;
-    }
-
-    .nav-list a.active {
-      font-weight: 700;
-      border-left: 3px solid var(--accent);
-      padding-left: 9px;
-    }
-
-    .sidebar-note {
-      margin: 20px 4px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface);
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    /* ===== MAIN CONTENT ===== */
-    .main {
-      min-width: 0;
-      padding: 28px clamp(18px, 4vw, 55px) 50px;
-    }
-
-    .breadcrumbs {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-
-    .page-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(29px, 3.5vw, 40px);
-      line-height: 1.2;
-      letter-spacing: -1px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      margin: 9px 0 0;
-    }
-
-    .page-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .action-btn {
-      padding: 7px 12px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .action-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .hero {
-      margin: 22px 0;
-      padding: 27px;
-      border-radius: 9px;
-      background:
-        linear-gradient(110deg, #172b4bdf, #365f9dcc),
-        url("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1400&q=80")
-        center/cover;
-      color: white;
-    }
-
-    .hero .eyebrow {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      opacity: 0.8;
-    }
-
-    .hero h2 {
-      margin: 5px 0;
-      font-size: clamp(24px, 3vw, 34px);
-    }
-
-    .hero p {
-      max-width: 650px;
-      margin-bottom: 0;
-      color: #edf3ff;
-    }
-
-    /* ===== ARTICLE + INFOBOX ===== */
-    .article-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 260px;
-      gap: 28px;
-      align-items: start;
-    }
-
-    .article {
-      min-width: 0;
-    }
-
-    .article h2 {
-      margin: 29px 0 10px;
-      padding-bottom: 7px;
-      border-bottom: 1px solid var(--border);
-      font-size: 25px;
-      line-height: 1.35;
-    }
-
-    .article h3 {
-      margin: 22px 0 7px;
-      font-size: 19px;
-    }
-
-    .article p {
-      margin: 10px 0 16px;
-    }
-
-    .article ul,
-    .article ol {
-      padding-left: 25px;
-    }
-
-    .notice {
-      margin: 18px 0;
-      padding: 13px 16px;
-      border-left: 4px solid var(--accent);
-      background: #e7edf8;
-      border-radius: 0 5px 5px 0;
-    }
-
-    .notice strong {
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    /* ===== TABLE OF CONTENTS ===== */
-    .toc {
-      display: inline-block;
-      min-width: min(100%, 270px);
-      margin: 14px 0 24px;
-      padding: 15px 20px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: var(--surface);
-    }
-
-    .toc-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: center;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .toc ol {
-      margin: 5px 0 0;
-      padding-left: 22px;
-    }
-
-    .toc ol ol {
-      margin: 2px 0;
-    }
-
-    .toc.collapsed ol {
-      display: none;
-    }
-
-    .text-btn {
-      border: none;
-      background: transparent;
-      color: var(--link);
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    /* ===== INFOBOX ===== */
-    .infobox {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface);
-      overflow: hidden;
-      font-size: 13px;
-    }
-
-    .infobox-title {
-      padding: 13px;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 800;
-      color: white;
-      background: var(--accent);
-    }
-
-    .infobox-image {
-      height: 170px;
-      background: #dce4ef;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-    }
-
-    .infobox-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .image-caption {
-      text-align: center;
-      color: var(--muted);
-      padding: 7px;
-      font-size: 11px;
-    }
-
-    .info-row {
-      display: grid;
-      grid-template-columns: 42% 58%;
-      border-top: 1px solid var(--border);
-    }
-
-    .info-label,
-    .info-value {
-      padding: 9px 10px;
-      overflow-wrap: anywhere;
-    }
-
-    .info-label {
-      background: #f4f6f9;
-      font-weight: 700;
-    }
-
-    .infobox-footer {
-      padding: 10px;
-      background: #f8f9fb;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    /* ===== CONTENT CARDS ===== */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin: 16px 0;
-    }
-
-    .wiki-card {
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface);
-      transition: transform 0.18s, box-shadow 0.18s;
-    }
-
-    .wiki-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 18px #172b4b12;
-    }
-
-    .wiki-card img {
-      display: block;
-      width: 100%;
-      height: 110px;
-      object-fit: cover;
-      background: #e1e6ee;
-    }
-
-    .card-body {
-      padding: 12px;
-    }
-
-    .card-body h3 {
-      margin: 0 0 5px;
-      font-size: 15px;
-    }
-
-    .card-body p {
-      color: var(--muted);
-      font-size: 12px;
-      margin: 0;
-    }
-
-    /* ===== TABLE ===== */
-    .wiki-table {
-      width: 100%;
-      margin: 15px 0 22px;
-      border-collapse: collapse;
-      background: var(--surface);
-      font-size: 13px;
-    }
-
-    .wiki-table th,
-    .wiki-table td {
-      padding: 10px 12px;
-      text-align: left;
-      border: 1px solid var(--border);
-    }
-
-    .wiki-table th {
-      background: #e9edf4;
-    }
-
-    .wiki-table tr:nth-child(even) td {
-      background: #f8f9fb;
-    }
-
-    /* ===== TAGS & FOOTER ===== */
-    .tag {
-      display: inline-block;
-      margin: 3px 4px 3px 0;
-      padding: 3px 9px;
-      background: #e7edf8;
-      color: var(--accent-dark);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .page-footer {
-      margin-top: 42px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .back-to-top {
-      position: fixed;
-      right: 22px;
-      bottom: 22px;
-      display: none;
-      border: 0;
-      border-radius: 50%;
-      width: 43px;
-      height: 43px;
-      color: white;
-      background: var(--accent);
-      font-size: 20px;
-      cursor: pointer;
-      box-shadow: 0 3px 12px #0002;
-    }
-
-    .back-to-top.visible {
-      display: block;
-    }
-
-    .search-results {
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      box-shadow: 0 8px 20px #0002;
-      overflow: hidden;
-      display: none;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .search-results a,
-    .search-results p {
-      display: block;
-      margin: 0;
-      padding: 10px 14px;
-      color: var(--text);
-    }
-
-    .search-results a:hover {
-      background: #edf1f8;
-      text-decoration: none;
-    }
-
-    .search-results .result-description {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 1050px) {
-      .article-grid {
-        grid-template-columns: minmax(0, 1fr) 230px;
-        gap: 20px;
-      }
-
-      .card-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 800px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      .sidebar {
-        display: none;
-        position: fixed;
-        top: var(--header-height);
-        bottom: 0;
-        left: 0;
-        width: 260px;
-        z-index: 90;
-        overflow-y: auto;
-        box-shadow: 5px 0 20px #0001;
-      }
-
-      .sidebar.open {
-        display: block;
-      }
-
-      .header-link {
-        display: none;
-      }
-
-      .article-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .infobox {
-        max-width: 420px;
-        grid-row: 1;
-      }
-
-      .main {
-        padding: 23px 20px 40px;
-      }
-    }
-
-    @media (max-width: 500px) {
-      .topbar {
-        gap: 11px;
-        padding: 0 12px;
-      }
-
-      .brand {
-        font-size: 16px;
-      }
-
-      .brand-icon {
-        width: 32px;
-        height: 32px;
-      }
-
-      .search {
-        width: auto;
-        flex: 1;
-        min-width: 70px;
-      }
-
-      .page-heading {
-        flex-direction: column;
-      }
-
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .wiki-card {
-        display: grid;
-        grid-template-columns: 100px 1fr;
-      }
-
-      .wiki-card img {
-        height: 100%;
-        min-height: 105px;
-      }
-
-      .hero {
-        padding: 20px;
-      }
-
-      .wiki-table {
-        font-size: 11px;
-      }
-
-      .wiki-table th,
-      .wiki-table td {
-        padding: 7px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wiki - Main Page</title>
+
+    <style>
+        /* ===== GENERAL STYLES ===== */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+            color: #20252d;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #3568b8;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 15px 25px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #d8dde6;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #294c83;
+            white-space: nowrap;
+        }
+
+        .search-bar input {
+            width: 250px;
+            max-width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #cbd1db;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* ===== PAGE LAYOUT ===== */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 65px);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            padding: 25px 15px;
+            background-color: #e8edf4;
+            border-right: 1px solid #d8dde6;
+        }
+
+        .sidebar h3 {
+            margin: 0 10px 10px;
+            color: #667085;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 9px 12px;
+            margin-bottom: 3px;
+            color: #344054;
+            border-radius: 4px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #d5e1f3;
+            color: #294c83;
+            text-decoration: none;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 10px;
+            color: #7b8492;
+            font-size: 13px;
+        }
+
+        .page-title {
+            margin: 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #d8dde6;
+            font-size: 34px;
+            font-weight: normal;
+        }
+
+        .subtitle {
+            color: #6c7583;
+            margin-top: 8px;
+        }
+
+        /* ===== BANNER ===== */
+        .banner {
+            margin: 25px 0;
+            padding: 25px;
+            background-color: #294c83;
+            color: white;
+            border-radius: 6px;
+        }
+
+        .banner h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            margin-bottom: 0;
+        }
+
+        /* ===== ARTICLE AND INFOBOX ===== */
+        .content-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 250px;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .article {
+            min-width: 0;
+        }
+
+        .article h2 {
+            margin-top: 30px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #d8dde6;
+            font-size: 24px;
+        }
+
+        .article h3 {
+            font-size: 18px;
+        }
+
+        /* ===== TABLE OF CONTENTS ===== */
+        .toc {
+            display: table;
+            min-width: 230px;
+            max-width: 100%;
+            margin: 20px 0;
+            padding: 15px 25px;
+            background-color: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 5px;
+        }
+
+        .toc-title {
+            margin: 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .toc ol {
+            margin-bottom: 0;
+            padding-left: 22px;
+        }
+
+        /* ===== INFOBOX ===== */
+        .infobox {
+            width: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .infobox h3 {
+            margin: 0;
+            padding: 12px;
+            background-color: #294c83;
+            color: white;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .infobox img {
+            display: block;
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+        }
+
+        .caption {
+            padding: 5px;
+            color: #6c7583;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            border-top: 1px solid #d8dde6;
+        }
+
+        .info-label {
+            padding: 9px;
+            background-color: #f3f5f8;
+            font-weight: bold;
+        }
+
+        .info-value {
+            padding: 9px;
+            overflow-wrap: anywhere;
+        }
+
+        /* ===== TABLE ===== */
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #d8dde6;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e6ebf2;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid #d8dde6;
+            color: #6c7583;
+            font-size: 12px;
+        }
+
+        /* ===== MOBILE RESPONSIVENESS ===== */
+        @media (max-width: 900px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .infobox {
+                max-width: 350px;
+                grid-row: 1;
+            }
+        }
+
+        @media (max-width: 650px) {
+            header {
+                flex-wrap: wrap;
+                padding: 12px 16px;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .search-bar input {
+                width: 100%;
+            }
+
+            .container {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                border-right: none;
+                border-bottom: 1px solid #d8dde6;
+            }
+
+            .sidebar a {
+                display: inline-block;
+                margin-right: 4px;
+            }
+
+            main {
+                padding: 20px 16px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .banner {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 7px;
+            }
+        }
+    </style>
 </head>
 
-<body id="top">
+<body>
 
-  <!-- TOP HEADER -->
-  <header class="topbar">
-    <button class="menu-toggle" id="menuToggle"
-      aria-label="Toggle navigation" aria-expanded="false">
-      ☰
-    </button>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">My Wiki</div>
 
-    <a class="brand" href="#top">
-      <span class="brand-icon">W</span>
-      <span>My Wiki</span>
-    </a>
+        <div class="search-bar">
+            <input
+                type="search"
+                placeholder="Search the wiki..."
+                aria-label="Search the wiki"
+            >
+        </div>
+    </header>
 
-    <div class="search">
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="Search this wiki..."
-        aria-label="Search this wiki"
-        autocomplete="off"
-      >
-      <span class="search-icon">⌕</span>
-      <div class="search-results" id="searchResults"></div>
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <h3>Navigation</h3>
+
+            <a href="#top" class="active">Main Page</a>
+            <a href="#overview">Overview</a>
+            <a href="#history">History</a>
+            <a href="#characters">Characters</a>
+            <a href="#locations">Locations</a>
+
+            <h3>Community</h3>
+
+            <a href="#community">Community Portal</a>
+            <a href="#references">References</a>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main id="top">
+
+            <div class="breadcrumbs">
+                <a href="#top">My Wiki</a> &gt; Main Page
+            </div>
+
+            <h1 class="page-title">Welcome to My Wiki</h1>
+
+            <p class="subtitle">
+                The community encyclopedia for your favourite universe.
+            </p>
+
+            <!-- INTRODUCTION BANNER -->
+            <section class="banner">
+                <h2>Explore the Unknown</h2>
+                <p>
+                    Discover characters, locations, stories, and secrets.
+                    Browse the articles or contribute your own knowledge
+                    to help this wiki grow.
+                </p>
+            </section>
+
+            <div class="content-layout">
+
+                <!-- ARTICLE -->
+                <article class="article">
+
+                    <section id="overview">
+                        <h2>Overview</h2>
+
+                        <p>
+                            Welcome to <strong>My Wiki</strong>, an encyclopedia
+                            dedicated to documenting the world, its history,
+                            its characters, and its locations.
+                        </p>
+
+                        <p>
+                            This template can be customized for a game,
+                            television series, book universe, or any other
+                            subject you want to document.
+                        </p>
+
+                        <!-- TABLE OF CONTENTS -->
+                        <div class="toc">
+                            <p class="toc-title">Contents</p>
+                            <ol>
+                                <li><a href="#overview">Overview</a></li>
+                                <li><a href="#history">History</a></li>
+                                <li><a href="#characters">Characters</a></li>
+                                <li><a href="#locations">Locations</a></li>
+                                <li><a href="#community">Community</a></li>
+                                <li><a href="#references">References</a></li>
+                            </ol>
+                        </div>
+                    </section>
+
+                    <section id="history">
+                        <h2>History</h2>
+
+                        <p>
+                            This section describes the background of the
+                            universe and the major events that shaped it.
+                            Replace this text with your own article content.
+                        </p>
+
+                        <h3>Origins</h3>
+
+                        <p>
+                            The earliest period established the foundations
+                            of the world and introduced its first civilizations.
+                        </p>
+
+                        <h3>Important Events</h3>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Event</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>001</td>
+                                    <td>Founding of the kingdom</td>
+                                </tr>
+                                <tr>
+                                    <td>025</td>
+                                    <td>Discovery of new lands</td>
+                                </tr>
+                                <tr>
+                                    <td>050</td>
+                                    <td>Beginning of the modern era</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <section id="characters">
+                        <h2>Characters</h2>
+
+                        <p>
+                            Learn about the important people and creatures
+                            within this universe, including their biographies,
+                            abilities, relationships, and appearances.
+                        </p>
+
+                        <h3>Character One</h3>
+
+                        <p>
+                            Character One is a central figure in the story.
+                            Add their biography and link to other related
+                            articles here.
+                        </p>
+
+                        <h3>Character Two</h3>
+
+                        <p>
+                            Character Two is an explorer whose discoveries
+                            have influenced the course of history.
+                        </p>
+                    </section>
+
+                    <section id="locations">
+                        <h2>Locations</h2>
+
+                        <p>
+                            Explore the regions, cities, landmarks, and
+                            environments featured throughout the universe.
+                        </p>
+
+                        <ul>
+                            <li><a href="#locations">The Central Kingdom</a></li>
+                            <li><a href="#locations">The Forgotten Forest</a></li>
+                            <li><a href="#locations">The Northern Mountains</a></li>
+                        </ul>
+                    </section>
+
+                    <section id="community">
+                        <h2>Community</h2>
+
+                        <p>
+                            Help improve the wiki by adding articles,
+                            correcting information, and providing sources
+                            for important details.
+                        </p>
+                    </section>
+
+                    <section id="references">
+                        <h2>References</h2>
+
+                        <ol>
+                            <li>Add your first reference here.</li>
+                            <li>Add another source here.</li>
+                        </ol>
+                    </section>
+
+                </article>
+
+                <!-- INFOBOX -->
+                <aside class="infobox">
+
+                    <h3>Wiki Information</h3>
+
+                    <img
+                        src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80"
+                        alt="A colorful nebula in space"
+                    >
+
+                    <div class="caption">
+                        Example image caption
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Type</div>
+                        <div class="info-value">Encyclopedia</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Genre</div>
+                        <div class="info-value">Fantasy</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Created</div>
+                        <div class="info-value">2026</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">Ongoing</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Articles</div>
+                        <div class="info-value">100+</div>
+                    </div>
+
+                </aside>
+
+            </div>
+
+            <!-- FOOTER -->
+            <footer>
+                <p>Last updated: October 2026</p>
+                <p>
+                    This is a community wiki template.
+                    Customize it for your own project.
+                </p>
+                <a href="#top">Return to top ↑</a>
+            </footer>
+
+        </main>
     </div>
 
-    <a class="header-link" href="#community">Community</a>
-  </header>
-
-  <div class="layout">
-
-    <!-- LEFT NAVIGATION -->
-    <aside class="sidebar" id="sidebar">
-      <p class="sidebar-title">Explore</p>
-
-      <ul class="nav-list">
-        <li><a class="active" href="#top">⌂ &nbsp; Main Page</a></li>
-        <li><a href="#overview">▤ &nbsp; Overview</a></li>
-        <li><a href="#history">◷ &nbsp; History</a></li>
-        <li><a href="#characters">♙ &nbsp; Characters</a></li>
-        <li><a href="#locations">⌖ &nbsp; Locations</a></li>
-        <li><a href="#gallery">▧ &nbsp; Gallery</a></li>
-      </ul>
-
-      <p class="sidebar-title">Community</p>
-
-      <ul class="nav-list">
-        <li><a href="#community">☷ &nbsp; Community Portal</a></li>
-        <li><a href="#contribute">✎ &nbsp; Contribute</a></li>
-        <li><a href="#references">↗ &nbsp; References</a></li>
-      </ul>
-
-      <div class="sidebar-note">
-        <strong>Welcome, explorer!</strong>
-        <p>Discover articles, uncover lore, and help expand this community encyclopedia.</p>
-      </div>
-    </aside>
-
-    <!-- MAIN PAGE -->
-    <main class="main">
-
-      <div class="breadcrumbs">
-        <a href="#top">My Wiki</a> › Main Page
-      </div>
-
-      <div class="page-heading">
-        <div>
-          <h1>Welcome to My Wiki</h1>
-          <p class="subtitle">Your community encyclopedia for everything worth exploring.</p>
-        </div>
-
-        <div class="page-actions">
-          <button class="action-btn" id="themeToggle">◐ Theme</button>
-          <button class="action-btn" id="printButton">Print</button>
-        </div>
-      </div>
-
-      <!-- HERO BANNER -->
-      <section class="hero">
-        <div class="eyebrow">Community Encyclopedia</div>
-        <h2>Discover a world of knowledge.</h2>
-        <p>
-          Explore characters, stories, locations, events, and hidden details
-          collected by the community. Every article brings another piece
-          of the bigger picture into focus.
-        </p>
-      </section>
-
-      <div class="article-grid">
-
-        <!-- ARTICLE BODY -->
-        <article class="article">
-
-          <section id="overview">
-            <h2>Overview</h2>
-
-            <p>
-              <strong>My Wiki</strong> is a community-driven encyclopedia
-              dedicated to documenting the universe, its history, and the
-              people who inhabit it. Use this template to create your own
-              fictional universe, game wiki, media database, or fan project.
-            </p>
-
-            <p>
-              Articles can include cross-references, infoboxes, categories,
-              galleries, tables, and detailed explanations. Replace this
-              sample content with information about your own subject.
-            </p>
-
-            <div class="notice">
-              <strong>Community notice</strong>
-              This is a demonstration page. All names, descriptions, and
-              example entries can be customized for your project.
-            </div>
-
-            <!-- TABLE OF CONTENTS -->
-            <nav class="toc" id="toc" aria-label="Table of contents">
-              <div class="toc-header">
-                <span>Contents</span>
-                <button class="text-btn" id="tocToggle">[hide]</button>
-              </div>
-              <ol>
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#history">History</a></li>
-                <li>
-                  <a href="#characters">Featured characters</a>
-                  <ol>
-                    <li><a href="#character-one">Character One</a></li>
-                    <li><a href="#character-two">Character Two</a></li>
-                  </ol>
-                </li>
-                <li><a href="#locations">Locations</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#community">Community</a></li>
-              </ol>
-            </nav>
-          </section>
-
-          <section id="history">
-            <h2>History</h2>
-
-            <p>
-              Every world has a story. This section can describe important
-              events, historical eras, major discoveries, or the origins
-              of the universe documented by your wiki.
-            </p>
-
-            <h3>Early era</h3>
-            <p>
-              In the earliest recorded period, the foundations of the world
-              were established. Add key events and link to related articles
-              as your encyclopedia grows.
-            </p>
-
-            <h3>Modern era</h3>
-            <p>
-              The modern era introduced new conflicts, discoveries, and
-              developments that shaped the present day.
-            </p>
-
-            <table class="wiki-table">
-              <thead>
-                <tr>
-                  <th>Period</th>
-                  <th>Event</th>
-                  <th>Significance</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Year 001</td>
-                  <td>Foundation</td>
-                  <td>The beginning of recorded history</td>
-                </tr>
-                <tr>
-                  <td>Year 025</td>
-                  <td>Expansion</td>
-                  <td>New territories are discovered</td>
-                </tr>
-                <tr>
-                  <td>Year 050</td>
-                  <td>Present day</td>
-                  <td>The current era begins</td>
-                </tr>
-              </tbody>
-            </table>
-          </section>
-
-          <section id="characters">
-            <h2>Featured characters</h2>
-
-            <p>
-              Browse important characters and discover their biographies,
-              relationships, abilities, and appearances.
-            </p>
-
-            <div class="card-grid">
-              <article class="wiki-card" id="character-one">
-                <img
-                  src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80"
-                  alt="Star-filled night sky"
-                  loading="lazy"
-                >
-                <div class="card-body">
-                  <h3><a href="#character-one">Character One</a></h3>
-                  <p>A mysterious figure connected to the world's origins.</p>
-                </div>
-              </article>
-
-              <article class="wiki-card" id="character-two">
-                <img
-                  src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=500&q=80"
-                  alt="Snow-covered mountain beneath the stars"
-                  loading="lazy"
-                >
-                <div class="card-body">
-                  <h3><a href="#character-two">Character Two</a></h3>
-                  <p>An explorer searching for long-lost knowledge.</p>
-                </div>
-              </article>
-
-              <article class="wiki-card">
-                <img
-                  src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=500&q=80"
-                  alt="Sunlight passing through a forest"
-                  loading="lazy"
-                >
-                <div class="card-body">
-                  <h3><a href="#characters">Character Three</a></h3>
-                  <p>A guardian of an ancient and forgotten place.</p>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section id="locations">
-            <h2>Locations</h2>
-
-            <p>
-              From bustling cities to remote wilderness, locations help
-              define the setting. Each entry can link to a dedicated page
-              with its own infobox, history, inhabitants, and gallery.
-            </p>
-
-            <ul>
-              <li><a href="#locations">The Central Kingdom</a> — the heart of civilization.</li>
-              <li><a href="#locations">The Forgotten Forest</a> — a place shrouded in mystery.</li>
-              <li><a href="#locations">The Northern Peaks</a> — a remote mountainous region.</li>
-            </ul>
-          </section>
-
-          <section id="gallery">
-            <h2>Gallery</h2>
-
-            <p>
-              Collect artwork, screenshots, maps, and other visual references
-              relevant to your wiki. Replace the sample images with assets
-              you have permission to use.
-            </p>
-
-            <div class="card-grid">
-              <article class="wiki-card">
-                <img
-                  src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=500&q=80"
-                  alt="Colorful nebula in deep space"
-                  loading="lazy"
-                >
-                <div class="card-body">
-                  <h3>Cosmos</h3>
-                  <p>World and environment reference.</p>
-                </div>
-              </article>
-
-              <article class="wiki-card">
-                <img
-                  src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=500&q=80"
-                  alt="Mountain lake landscape"
-                  loading="lazy"
-                >
-                <div class="card-body">
-                  <h3>Landscape</h3>
-                  <p>Location reference.</p>
-                </div>
-              </article>
-
-              <article class="wiki-card">
-                <img
-                  src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=500&q=80"
-                  alt="Ocean waves"
-                  loading="lazy"
-                >
-                <div class="card-body">
-                  <h3>Environment</h3>
-                  <p>Nature reference.</p>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section id="community">
-            <h2>Community</h2>
-
-            <p>
-              This encyclopedia grows through contributions from its readers.
-              Help improve articles, add citations, correct errors, and
-              discover topics that still need documenting.
-            </p>
-
-            <div class="notice">
-              <strong>Want to contribute?</strong>
-              Start by expanding an existing article or creating a new entry.
-              Keep information organized, readable, and supported by sources.
-              <p><a href="#contribute">Read the contribution guidelines →</a></p>
-            </div>
-          </section>
-
-          <section id="contribute">
-            <h2>How to contribute</h2>
-            <ol>
-              <li>Choose a topic that needs an article.</li>
-              <li>Research the subject and gather reliable references.</li>
-              <li>Write a clear introduction and organize sections.</li>
-              <li>Add relevant links, categories, and images.</li>
-              <li>Review the page for accuracy and readability.</li>
-            </ol>
-          </section>
-
-          <section id="references">
-            <h2>References</h2>
-            <ol>
-              <li>Replace this entry with a source for your article.</li>
-              <li>Add publication details and links where applicable.</li>
-            </ol>
-
-            <h3>Categories</h3>
-            <span class="tag">Main Pages</span>
-            <span class="tag">Community</span>
-            <span class="tag">Encyclopedia</span>
-            <span class="tag">Featured Articles</span>
-          </section>
-
-        </article>
-
-        <!-- RIGHT INFOBOX -->
-        <aside class="infobox" aria-label="Wiki information">
-          <div class="infobox-title">My Wiki</div>
-
-          <div class="infobox-image">
-            <img
-              src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=700&q=80"
-              alt="A colorful nebula representing the fictional universe"
-            >
-          </div>
-          <div class="image-caption">A glimpse into the universe</div>
-
-          <div class="info-row">
-            <div class="info-label">Type</div>
-            <div class="info-value">Community encyclopedia</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Genre</div>
-            <div class="info-value">Fantasy / Sci-fi</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Established</div>
-            <div class="info-value">Year 001</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Founder</div>
-            <div class="info-value">Unknown</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Status</div>
-            <div class="info-value">Ongoing</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Known for</div>
-            <div class="info-value">Lore and storytelling</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Related topics</div>
-            <div class="info-value">
-              <a href="#characters">Characters</a>,
-              <a href="#locations">Locations</a>
-            </div>
-          </div>
-
-          <div class="infobox-footer">
-            This infobox is fully customizable.
-          </div>
-        </aside>
-
-      </div>
-
-      <!-- FOOTER -->
-      <footer class="page-footer">
-        <p>Last updated: October 2026</p>
-        <p>
-          Content is provided for demonstration purposes.
-          Customize this template for your own community project.
-        </p>
-        <p>
-          <a href="#top">Back to top ↑</a>
-          &nbsp;·&nbsp;
-          <a href="#community">Community</a>
-          &nbsp;·&nbsp;
-          <a href="#references">References</a>
-        </p>
-      </footer>
-
-    </main>
-  </div>
-
-  <button class="back-to-top" id="backToTop"
-    aria-label="Back to top" title="Back to top">↑</button>
-
-  <script>
-    // ===== MOBILE SIDEBAR =====
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebar = document.getElementById("sidebar");
-
-    menuToggle.addEventListener("click", () => {
-      const isOpen = sidebar.classList.toggle("open");
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-    });
-
-    sidebar.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        sidebar.classList.remove("open");
-        menuToggle.setAttribute("aria-expanded", "false");
-      });
-    });
-
-    // ===== TABLE OF CONTENTS =====
-    const toc = document.getElementById("toc");
-    const tocToggle = document.getElementById("tocToggle");
-
-    tocToggle.addEventListener("click", () => {
-      const isCollapsed = toc.classList.toggle("collapsed");
-      tocToggle.textContent = isCollapsed ? "[show]" : "[hide]";
-    });
-
-    // ===== SEARCH =====
-    const searchInput = document.getElementById("searchInput");
-    const searchResults = document.getElementById("searchResults");
-
-    const searchableSections = [
-      {
-        title: "Overview",
-        id: "overview",
-        description: "Introduction to the wiki"
-      },
-      {
-        title: "History",
-        id: "history",
-        description: "Timeline and important events"
-      },
-      {
-        title: "Featured Characters",
-        id: "characters",
-        description: "Characters and biographies"
-      },
-      {
-        title: "Locations",
-        id: "locations",
-        description: "Places and regions"
-      },
-      {
-        title: "Gallery",
-        id: "gallery",
-        description: "Images and visual references"
-      },
-      {
-        title: "Community",
-        id: "community",
-        description: "Community information"
-      },
-      {
-        title: "Contribution Guidelines",
-        id: "contribute",
-        description: "How to help improve the wiki"
-      },
-      {
-        title: "References",
-        id: "references",
-        description: "Sources and categories"
-      }
-    ];
-
-    function renderSearchResults(query) {
-      const normalizedQuery = query.trim().toLowerCase();
-      searchResults.replaceChildren();
-
-      if (!normalizedQuery) {
-        searchResults.style.display = "none";
-        return;
-      }
-
-      const matches = searchableSections.filter(item =>
-        (item.title + " " + item.description)
-          .toLowerCase()
-          .includes(normalizedQuery)
-      );
-
-      if (matches.length === 0) {
-        const empty = document.createElement("p");
-        empty.textContent = "No matching sections found.";
-        searchResults.appendChild(empty);
-      } else {
-        matches.forEach(item => {
-          const link = document.createElement("a");
-          link.href = "#" + item.id;
-
-          const title = document.createElement("strong");
-          title.textContent = item.title;
-
-          const description = document.createElement("span");
-          description.className = "result-description";
-          description.textContent = item.description;
-
-          link.append(title, description);
-          link.addEventListener("click", () => {
-            searchResults.style.display = "none";
-            searchInput.value = "";
-          });
-
-          searchResults.appendChild(link);
-        });
-      }
-
-      searchResults.style.display = "block";
-    }
-
-    searchInput.addEventListener("input", event => {
-      renderSearchResults(event.target.value);
-    });
-
-    searchInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        const firstResult = searchResults.querySelector("a");
-        if (firstResult) {
-          window.location.hash = firstResult.getAttribute("href");
-          searchResults.style.display = "none";
-          searchInput.value = "";
-        }
-      }
-
-      if (event.key === "Escape") {
-        searchResults.style.display = "none";
-      }
-    });
-
-    document.addEventListener("click", event => {
-      if (!event.target.closest(".search")) {
-        searchResults.style.display = "none";
-      }
-    });
-
-    // ===== DARK MODE =====
-    const themeToggle = document.getElementById("themeToggle");
-    let darkMode = false;
-
-    themeToggle.addEventListener("click", () => {
-      darkMode = !darkMode;
-
-      if (darkMode) {
-        document.documentElement.style.setProperty("--page-bg", "#171b22");
-        document.documentElement.style.setProperty("--surface", "#222833");
-        document.documentElement.style.setProperty("--text", "#e8edf5");
-        document.documentElement.style.setProperty("--muted", "#a6b0c0");
-        document.documentElement.style.setProperty("--border", "#394353");
-        document.documentElement.style.setProperty("--link", "#8db8ff");
-        document.documentElement.style.setProperty("--accent", "#4267a9");
-        document.documentElement.style.setProperty("--accent-dark", "#b4cbff");
-        sidebar.style.background = "#1d232d";
-
-        document.querySelectorAll(
-          ".nav-list a, .info-label, .infobox-footer, .wiki-table th"
-        ).forEach(element => {
-          element.style.background = "#2a3240";
-        });
-
-        document.querySelectorAll(".notice").forEach(element => {
-          element.style.background = "#28364c";
-        });
-
-        document.querySelectorAll(".toc").forEach(element => {
-          element.style.background = "#222833";
-        });
-
-        document.querySelectorAll(".search input").forEach(element => {
-          element.style.background = "#171b22";
-          element.style.color = "#e8edf5";
-        });
-
-        document.querySelectorAll(".wiki-table tr:nth-child(even) td")
-          .forEach(element => {
-            element.style.background = "#252c37";
-          });
-
-        themeToggle.textContent = "☀ Light";
-      } else {
-        window.location.reload();
-      }
-    });
-
-    // ===== PRINT =====
-    document.getElementById("printButton").addEventListener("click", () => {
-      window.print();
-    });
-
-    // ===== BACK TO TOP =====
-    const backToTop = document.getElementById("backToTop");
-
-    window.addEventListener("scroll", () => {
-      backToTop.classList.toggle("visible", window.scrollY > 350);
-    });
-
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    // ===== ACTIVE SIDEBAR LINK =====
-    const sections = document.querySelectorAll(
-      ".article section[id], .article h2[id]"
-    );
-
-    const navLinks = document.querySelectorAll(".nav-list a");
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            navLinks.forEach(link => {
-              link.classList.toggle(
-                "active",
-                link.getAttribute("href") === "#" + entry.target.id
-              );
-            });
-          }
-        });
-      }, {
-        rootMargin: "-15% 0px -70% 0px"
-      });
-
-      sections.forEach(section => observer.observe(section));
-    }
-  </script>
 </body>
 </html>
