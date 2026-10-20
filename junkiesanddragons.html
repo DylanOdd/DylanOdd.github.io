@@ -4,333 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wiki - Main Page</title>
-
-    <style>
-        /* ===== GENERAL STYLES ===== */
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f1f3f6;
-            color: #20252d;
-            line-height: 1.6;
-        }
-
-        a {
-            color: #3568b8;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* ===== HEADER ===== */
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 15px 25px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #d8dde6;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: #294c83;
-            white-space: nowrap;
-        }
-
-        .search-bar input {
-            width: 250px;
-            max-width: 100%;
-            padding: 9px 12px;
-            border: 1px solid #cbd1db;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        /* ===== PAGE LAYOUT ===== */
-        .container {
-            display: flex;
-            min-height: calc(100vh - 65px);
-        }
-
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 220px;
-            flex-shrink: 0;
-            padding: 25px 15px;
-            background-color: #e8edf4;
-            border-right: 1px solid #d8dde6;
-        }
-
-        .sidebar h3 {
-            margin: 0 10px 10px;
-            color: #667085;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 9px 12px;
-            margin-bottom: 3px;
-            color: #344054;
-            border-radius: 4px;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active {
-            background-color: #d5e1f3;
-            color: #294c83;
-            text-decoration: none;
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        main {
-            flex: 1;
-            min-width: 0;
-            padding: 30px;
-        }
-
-        .breadcrumbs {
-            margin-bottom: 10px;
-            color: #7b8492;
-            font-size: 13px;
-        }
-
-        .page-title {
-            margin: 0;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #d8dde6;
-            font-size: 34px;
-            font-weight: normal;
-        }
-
-        .subtitle {
-            color: #6c7583;
-            margin-top: 8px;
-        }
-
-        /* ===== BANNER ===== */
-        .banner {
-            margin: 25px 0;
-            padding: 25px;
-            background-color: #294c83;
-            color: white;
-            border-radius: 6px;
-        }
-
-        .banner h2 {
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-
-        .banner p {
-            margin-bottom: 0;
-        }
-
-        /* ===== ARTICLE AND INFOBOX ===== */
-        .content-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 250px;
-            gap: 25px;
-            align-items: start;
-        }
-
-        .article {
-            min-width: 0;
-        }
-
-        .article h2 {
-            margin-top: 30px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #d8dde6;
-            font-size: 24px;
-        }
-
-        .article h3 {
-            font-size: 18px;
-        }
-
-        /* ===== TABLE OF CONTENTS ===== */
-        .toc {
-            display: table;
-            min-width: 230px;
-            max-width: 100%;
-            margin: 20px 0;
-            padding: 15px 25px;
-            background-color: #ffffff;
-            border: 1px solid #d8dde6;
-            border-radius: 5px;
-        }
-
-        .toc-title {
-            margin: 0;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .toc ol {
-            margin-bottom: 0;
-            padding-left: 22px;
-        }
-
-        /* ===== INFOBOX ===== */
-        .infobox {
-            width: 100%;
-            overflow: hidden;
-            background-color: #ffffff;
-            border: 1px solid #d8dde6;
-            border-radius: 5px;
-            font-size: 13px;
-        }
-
-        .infobox h3 {
-            margin: 0;
-            padding: 12px;
-            background-color: #294c83;
-            color: white;
-            text-align: center;
-            font-size: 17px;
-        }
-
-        .infobox img {
-            display: block;
-            width: 100%;
-            height: 170px;
-            object-fit: cover;
-        }
-
-        .caption {
-            padding: 5px;
-            color: #6c7583;
-            text-align: center;
-            font-size: 11px;
-        }
-
-        .info-row {
-            display: grid;
-            grid-template-columns: 40% 60%;
-            border-top: 1px solid #d8dde6;
-        }
-
-        .info-label {
-            padding: 9px;
-            background-color: #f3f5f8;
-            font-weight: bold;
-        }
-
-        .info-value {
-            padding: 9px;
-            overflow-wrap: anywhere;
-        }
-
-        /* ===== TABLE ===== */
-        table {
-            width: 100%;
-            margin: 20px 0;
-            border-collapse: collapse;
-            background-color: #ffffff;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #d8dde6;
-            text-align: left;
-        }
-
-        th {
-            background-color: #e6ebf2;
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            margin-top: 40px;
-            padding: 20px 0;
-            border-top: 1px solid #d8dde6;
-            color: #6c7583;
-            font-size: 12px;
-        }
-
-        /* ===== MOBILE RESPONSIVENESS ===== */
-        @media (max-width: 900px) {
-            .content-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .infobox {
-                max-width: 350px;
-                grid-row: 1;
-            }
-        }
-
-        @media (max-width: 650px) {
-            header {
-                flex-wrap: wrap;
-                padding: 12px 16px;
-            }
-
-            .search-bar {
-                width: 100%;
-            }
-
-            .search-bar input {
-                width: 100%;
-            }
-
-            .container {
-                display: block;
-            }
-
-            .sidebar {
-                width: 100%;
-                padding: 15px;
-                border-right: none;
-                border-bottom: 1px solid #d8dde6;
-            }
-
-            .sidebar a {
-                display: inline-block;
-                margin-right: 4px;
-            }
-
-            main {
-                padding: 20px 16px;
-            }
-
-            .page-title {
-                font-size: 28px;
-            }
-
-            .banner {
-                padding: 20px;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 7px;
-            }
-        }
-    </style>
+    <title>Junkies and Dragons - Main Page</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <!-- HEADER -->
     <header>
-        <div class="logo">My Wiki</div>
+        <div class="logo">Junkies and Dragons</div>
 
         <div class="search-bar">
             <input
@@ -356,20 +38,20 @@
             <h3>Community</h3>
 
             <a href="#community">Community Portal</a>
-            <a href="#references">References</a>
+
         </nav>
 
         <!-- MAIN CONTENT -->
         <main id="top">
 
             <div class="breadcrumbs">
-                <a href="#top">My Wiki</a> &gt; Main Page
+                <a href="#top">Junkies and Dragons</a> &gt; Main Page
             </div>
 
-            <h1 class="page-title">Welcome to My Wiki</h1>
+            <h1 class="page-title">Welcome to Junkies and Dragons</h1>
 
             <p class="subtitle">
-                The community encyclopedia for your favourite universe.
+                The community encyclopedia of the hellscape we are making.
             </p>
 
             <!-- INTRODUCTION BANNER -->
@@ -391,15 +73,13 @@
                         <h2>Overview</h2>
 
                         <p>
-                            Welcome to <strong>My Wiki</strong>, an encyclopedia
+                            Welcome to <strong>Junkies and Dragons</strong>, an website
                             dedicated to documenting the world, its history,
                             its characters, and its locations.
                         </p>
 
                         <p>
-                            This template can be customized for a game,
-                            television series, book universe, or any other
-                            subject you want to document.
+                            This is the template page I will be using so if anyone has any changes they want speak now or forevere hold your peace.
                         </p>
 
                         <!-- TABLE OF CONTENTS -->
@@ -445,15 +125,15 @@
                             <tbody>
                                 <tr>
                                     <td>001</td>
-                                    <td>Founding of the kingdom</td>
+                                    <td>Dragons arrival</td>
                                 </tr>
                                 <tr>
-                                    <td>025</td>
-                                    <td>Discovery of new lands</td>
+                                    <td>002</td>
+                                    <td>Epic training montage</td>
                                 </tr>
                                 <tr>
-                                    <td>050</td>
-                                    <td>Beginning of the modern era</td>
+                                    <td>003</td>
+                                    <td>The great war</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -463,24 +143,19 @@
                         <h2>Characters</h2>
 
                         <p>
-                            Learn about the important people and creatures
-                            within this universe, including their biographies,
-                            abilities, relationships, and appearances.
+                            The people.
                         </p>
 
                         <h3>Character One</h3>
 
                         <p>
-                            Character One is a central figure in the story.
-                            Add their biography and link to other related
-                            articles here.
+                            High Velocity Edward
                         </p>
 
                         <h3>Character Two</h3>
 
                         <p>
-                            Character Two is an explorer whose discoveries
-                            have influenced the course of history.
+                            Dragon boiiiiiiii
                         </p>
                     </section>
 
@@ -493,9 +168,9 @@
                         </p>
 
                         <ul>
-                            <li><a href="#locations">The Central Kingdom</a></li>
-                            <li><a href="#locations">The Forgotten Forest</a></li>
-                            <li><a href="#locations">The Northern Mountains</a></li>
+                            <li><a href="#locations">Dundee Laww</a></li>
+                            <li><a href="#locations">Murraygate</a></li>
+                            <li><a href="#locations">Edinburgh</a></li>
                         </ul>
                     </section>
 
@@ -505,17 +180,8 @@
                         <p>
                             Help improve the wiki by adding articles,
                             correcting information, and providing sources
-                            for important details.
+                            for important details. Or don't, this problem child of a website does not need any more information and more importantly I don't know how to program community edits in.
                         </p>
-                    </section>
-
-                    <section id="references">
-                        <h2>References</h2>
-
-                        <ol>
-                            <li>Add your first reference here.</li>
-                            <li>Add another source here.</li>
-                        </ol>
                     </section>
 
                 </article>
@@ -526,17 +192,17 @@
                     <h3>Wiki Information</h3>
 
                     <img
-                        src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80"
-                        alt="A colorful nebula in space"
+                        src="eddie.jpg"
+                        alt="The man the myth the legend"
                     >
 
                     <div class="caption">
-                        Example image caption
+                        The man the myth the legend
                     </div>
 
                     <div class="info-row">
                         <div class="info-label">Type</div>
-                        <div class="info-value">Encyclopedia</div>
+                        <div class="info-value">Hellscape</div>
                     </div>
 
                     <div class="info-row">
@@ -551,12 +217,12 @@
 
                     <div class="info-row">
                         <div class="info-label">Status</div>
-                        <div class="info-value">Ongoing</div>
+                        <div class="info-value">Ongoing (sadly)</div>
                     </div>
 
                     <div class="info-row">
                         <div class="info-label">Articles</div>
-                        <div class="info-value">100+</div>
+                        <div class="info-value">1</div>
                     </div>
 
                 </aside>
@@ -567,8 +233,7 @@
             <footer>
                 <p>Last updated: October 2026</p>
                 <p>
-                    This is a community wiki template.
-                    Customize it for your own project.
+                    I am so sorry
                 </p>
                 <a href="#top">Return to top ↑</a>
             </footer>
